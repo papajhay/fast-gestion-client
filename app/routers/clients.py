@@ -40,9 +40,15 @@ def create_client(
 
 @router.get("/", response_model=list[ClientResponse])
 def get_clients(
+    chaleur: int | None = None,
     db: Session = Depends(get_db),
 ):
-    return db.query(Client).all()
+    query = db.query(Client)
+
+    if chaleur is not None:
+        query = query.filter(Client.chaleur == chaleur)
+
+    return query.all()
 
 
 @router.get("/{id}", response_model=ClientResponse)
