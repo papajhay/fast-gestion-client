@@ -55,22 +55,41 @@ def create_client(
     return new_client
 
 
-@router.get("/", response_model=list[ClientResponse])
-def get_clients(
-    #chaleur: int | None = None,
-    sort: str = "nombre_appel,chaleur",
-    db: Session = Depends(get_db),
-):
-    query = db.query(Client)
-    
-    #if chaleur is not None:
-    #        query = query.filter(Client.chaleur == chaleur)
+def apply_client_filters(query, filters: dict):
+    """
+    Applique dynamiquement les filtres sur la requête SQLAlchemy.
+    - filters: {field_name: value_or_none}
+    - Les champs inconnus ou à None sont ignorés.
+    - nom / prenom utilisent un filtre partiel (ilike).
+    - Les autres champs utilisent un filtre exact (==).
+    """
+    for field, value in filters.items():
+        if value is None:
+            continue
 
-    sort_fields = [field.strip() for field in sort.split(",")]
+        column = SORTABLE_FIELDS.get(field)
+        if column is None:
+            # Champ non triable / non filtrable → on ignore
+            continue
+
+        if field in ("nom", "prenom"):
+            query = query.filter(column.ilike(f"%{value}%"))
+        else:
+            query = query.filter(column == value)
+
+    return query
+
+
+def apply_client_sort(query, sort: str):
+    """
+    Applique le tri dynamique sur la requête SQLAlchemy.
+    - sort: "field1,field2,..."
+    - Lève une HTTPException si un champ est invalide.
+    """
+    sort_fields = [f.strip() for f in sort.split(",") if f.strip()]
 
     for field in sort_fields:
         column = SORTABLE_FIELDS.get(field)
-
         if column is None:
             raise HTTPException(
                 status_code=400,
@@ -78,11 +97,33 @@ def get_clients(
             )
 
         direction = DEFAULT_SORT_DIRECTIONS.get(field, "asc")
-
         if direction == "desc":
             query = query.order_by(column.desc())
         else:
             query = query.order_by(column.asc())
+
+    return query
+
+@router.get("/", response_model=list[ClientResponse])
+def get_clients(
+    chaleur: int | None = None,
+    nombre_appel: int | None = None,
+    nom: str | None = None,
+    prenom: str | None = None,
+    sort: str = "nombre_appel,chaleur",
+    db: Session = Depends(get_db),
+):
+    query = db.query(Client)
+    
+    filters = {
+        "nom": nom,
+        "prenom": prenom,
+        "chaleur": chaleur,
+        "nombre_appel": nombre_appel,
+    }
+
+    query = apply_client_filters(query, filters)
+    query = apply_client_sort(query, sort)
 
     return query.all()
 
