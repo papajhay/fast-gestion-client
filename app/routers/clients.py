@@ -11,6 +11,23 @@ router = APIRouter(
     tags=["Clients"],
 )
 
+SORTABLE_FIELDS = {
+    "nombre_appel": Client.nombre_appel,
+    "chaleur": Client.chaleur,
+    "nom": Client.nom,
+    "prenom": Client.prenom,
+    "date_arrivee": Client.date_arrivee,
+}
+
+
+DEFAULT_SORT_DIRECTIONS = {
+    "nombre_appel": "asc",
+    "chaleur": "desc",
+    "nom": "asc",
+    "prenom": "asc",
+    "date_arrivee": "asc",
+}
+
 
 @router.post("/", response_model=ClientResponse, status_code=201)
 def create_client(
@@ -40,13 +57,32 @@ def create_client(
 
 @router.get("/", response_model=list[ClientResponse])
 def get_clients(
-    chaleur: int | None = None,
+    #chaleur: int | None = None,
+    sort: str = "nombre_appel,chaleur",
     db: Session = Depends(get_db),
 ):
     query = db.query(Client)
+    
+    #if chaleur is not None:
+    #        query = query.filter(Client.chaleur == chaleur)
 
-    if chaleur is not None:
-        query = query.filter(Client.chaleur == chaleur)
+    sort_fields = [field.strip() for field in sort.split(",")]
+
+    for field in sort_fields:
+        column = SORTABLE_FIELDS.get(field)
+
+        if column is None:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Champ de tri invalide : {field}",
+            )
+
+        direction = DEFAULT_SORT_DIRECTIONS.get(field, "asc")
+
+        if direction == "desc":
+            query = query.order_by(column.desc())
+        else:
+            query = query.order_by(column.asc())
 
     return query.all()
 
