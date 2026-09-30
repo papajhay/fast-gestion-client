@@ -29,6 +29,18 @@ DEFAULT_SORT_DIRECTIONS = {
 }
 
 
+def to_client_response(client: Client) -> ClientResponse:
+    return ClientResponse(
+        Mail=client.mail,
+        Nom=client.nom,
+        Prénom=client.prenom,
+        Commercial=client.commercial,
+        Chaleur=client.chaleur,
+        Date_d_arrivée=client.date_arrivee,
+        Nombre_d_appel=client.nombre_appel,
+    )
+
+
 @router.post("/", response_model=ClientResponse, status_code=201)
 def create_client(
     client: ClientCreate,
@@ -52,7 +64,7 @@ def create_client(
     db.commit()
     db.refresh(new_client)
 
-    return new_client
+    return to_client_response(new_client)
 
 
 def apply_client_filters(query, filters: dict):
@@ -127,21 +139,7 @@ def get_clients(
     
     clients = query.all()
 
-    result = []
-    for c in clients:
-        result.append(
-            ClientResponse(
-                Mail=c.mail,
-                Nom=c.nom,
-                Prénom=c.prenom,
-                Commercial=c.commercial,
-                Chaleur=c.chaleur,
-                Date_d_arrivée=c.date_arrivee,
-                Nombre_d_appel=c.nombre_appel,
-            )
-        )
-
-    return result
+    return [to_client_response(client) for client in clients]
 
 
 @router.get("/{id}", response_model=ClientResponse)
@@ -161,7 +159,7 @@ def get_client(
             detail="Client introuvable.",
         )
 
-    return client
+    return to_client_response(client)
 
 
 @router.put("/{id}", response_model=ClientResponse)
@@ -210,7 +208,7 @@ def update_client(
     db.commit()
     db.refresh(client)
 
-    return client
+    return to_client_response(client)
 
 
 @router.delete("/{id}", status_code=204)
@@ -276,4 +274,4 @@ def patch_client(
     db.commit()
     db.refresh(client)
 
-    return client
+    return to_client_response(client)
