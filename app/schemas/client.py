@@ -9,8 +9,8 @@ class ClientBase(BaseModel):
     prenom: str
     commercial: str
     chaleur: int
-    date_arrivee: date
-    nombre_appel: int = 0
+    dateArrivee: date
+    nombreAppel: int = 0
 
 
 class ClientCreate(ClientBase):
@@ -31,5 +31,5 @@ class ClientPatch(BaseModel):
     prenom: str | None = None
     commercial: str | None = None
     chaleur: int | None = None
-    date_arrivee: date | None = None
-    nombre_appel: int | None = None
+    dateArrivee: date | None = None
+    nombreAppel: int | None = None

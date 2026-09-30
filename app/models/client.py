@@ -41,12 +41,12 @@ class Client(Base):
     nullable=False,
     )
 
-    date_arrivee: Mapped[date] = mapped_column(
+    dateArrivee: Mapped[date] = mapped_column(
         Date,
         nullable=False,
     )
 
-    nombre_appel: Mapped[int] = mapped_column(
+    nombreAppel: Mapped[int] = mapped_column(
         Integer,
         default=0,
         nullable=False,

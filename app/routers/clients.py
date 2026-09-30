@@ -12,20 +12,20 @@ router = APIRouter(
 )
 
 SORTABLE_FIELDS = {
-    "nombre_appel": Client.nombre_appel,
+    "nombreAppel": Client.nombreAppel,
     "chaleur": Client.chaleur,
     "nom": Client.nom,
     "prenom": Client.prenom,
-    "date_arrivee": Client.date_arrivee,
+    "dateArrivee": Client.dateArrivee,
 }
 
 
 DEFAULT_SORT_DIRECTIONS = {
-    "nombre_appel": "asc",
+    "nombreAppel": "asc",
     "chaleur": "desc",
     "nom": "asc",
     "prenom": "asc",
-    "date_arrivee": "asc",
+    "dateArrivee": "asc",
 }
 
 
@@ -107,10 +107,10 @@ def apply_client_sort(query, sort: str):
 @router.get("/", response_model=list[ClientResponse])
 def get_clients(
     chaleur: int | None = None,
-    nombre_appel: int | None = None,
+    nombreAppel: int | None = None,
     nom: str | None = None,
     prenom: str | None = None,
-    sort: str = "nombre_appel,chaleur",
+    sort: str = "nombreAppel,chaleur",
     db: Session = Depends(get_db),
 ):
     query = db.query(Client)
@@ -119,7 +119,7 @@ def get_clients(
         "nom": nom,
         "prenom": prenom,
         "chaleur": chaleur,
-        "nombre_appel": nombre_appel,
+        "nombreAppel": nombreAppel,
     }
 
     query = apply_client_filters(query, filters)
@@ -188,8 +188,8 @@ def update_client(
     client.prenom = client_data.prenom
     client.commercial = client_data.commercial
     client.chaleur = client_data.chaleur
-    client.date_arrivee = client_data.date_arrivee
-    client.nombre_appel = client_data.nombre_appel
+    client.dateArrivee = client_data.dateArrivee
+    client.nombreAppel = client_data.nombreAppel
 
     db.commit()
     db.refresh(client)
