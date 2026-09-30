@@ -124,8 +124,24 @@ def get_clients(
 
     query = apply_client_filters(query, filters)
     query = apply_client_sort(query, sort)
+    
+    clients = query.all()
 
-    return query.all()
+    result = []
+    for c in clients:
+        result.append(
+            ClientResponse(
+                Mail=c.mail,
+                Nom=c.nom,
+                Prénom=c.prenom,
+                Commercial=c.commercial,
+                Chaleur=c.chaleur,
+                Date_d_arrivée=c.date_arrivee,
+                Nombre_d_appel=c.nombre_appel,
+            )
+        )
+
+    return result
 
 
 @router.get("/{id}", response_model=ClientResponse)
