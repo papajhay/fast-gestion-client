@@ -1,0 +1,60 @@
+# -------------------- Python --------------------
+__pycache__/
+*.py[cod]
+*.pyc
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# -------------------- Environnement virtuel --------------------
+venv/
+ENV/
+env/
+.venv/
+
+# -------------------- IDE / Éditeurs --------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# -------------------- Logs et tests --------------------
+*.log
+logs/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# -------------------- Environnement / secrets --------------------
+.env
+.env.local
+.env.*.local
+
+# -------------------- Base de données SQLite (si utilisée en dev) --------------------
+*.db
+*.sqlite
+*.sqlite3
+
+# -------------------- Autres --------------------
+*.bak
+*.tmp
+Thumbs.db
