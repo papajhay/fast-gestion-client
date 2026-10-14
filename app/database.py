@@ -1,15 +1,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
+from app.core.config import settings
 
-DATABASE_URL = "sqlite:///./clients.db"
-
-#DATABASE_URL = "postgresql+psycopg://postgres:fifaliana12345@localhost:5432/clients"
-
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False},
+connect_args = (
+    {"check_same_thread": False}
+    if settings.DATABASE_URL.startswith("sqlite")
+    else {}
 )
+engine = create_engine(settings.DATABASE_URL, connect_args=connect_args)
 
 
 SessionLocal = sessionmaker(

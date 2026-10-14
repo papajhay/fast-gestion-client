@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
 from app.database import Base, engine
-from app.models.client import Client
-from app.routers.clients import router as clients_router
+from app import models  # noqa: F401 - register all models before create_all
+from app.routers import auth, clients
 
 
 Base.metadata.create_all(bind=engine)
@@ -14,7 +14,8 @@ app = FastAPI(
 )
 
 
-app.include_router(clients_router)
+app.include_router(auth.router)
+app.include_router(clients.router)
 
 
 @app.get("/")

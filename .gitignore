@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE settings (keep explicitly shared project settings if needed)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Tests and coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Temporary files and logs
+*.tmp
+*.log
+
+# Python build artifacts
+build/
+dist/
+*.egg-info/
