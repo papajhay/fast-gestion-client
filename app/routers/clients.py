@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.deps import require_auth
 from app.models.client import Client
 from app.schemas.client import ClientCreate, ClientResponse, ClientUpdate, ClientPatch
 
@@ -9,6 +10,7 @@ from app.schemas.client import ClientCreate, ClientResponse, ClientUpdate, Clien
 router = APIRouter(
     prefix="/clients",
     tags=["Clients"],
+    dependencies=[Depends(require_auth)],
 )
 
 SORTABLE_FIELDS = {
